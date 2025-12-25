@@ -42,4 +42,4 @@ testem.log
 Thumbs.db
 
 # Compodoc output
-compodoc/docs/
+docs/
