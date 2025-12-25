@@ -1,4 +1,4 @@
-name: Build & Deploy Compodoc
+name: Build & Deploy Angular + Compodoc
 
 on:
   push:
@@ -9,31 +9,45 @@ permissions:
   contents: write
 
 jobs:
-  compodoc:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
+      # 1️⃣ Checkout
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Node
+      # 2️⃣ Node
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies
+      # 3️⃣ Install deps
       - name: Install dependencies
         run: npm ci
 
-      # 4️⃣ Generate Compodoc
-      - name: Generate documentation
+      # 4️⃣ Build Angular app
+      - name: Build Angular
+        run: |
+          npm run build -- --configuration production --base-href /docu-web/
+
+
+      # 5️⃣ Build Compodoc
+      - name: Build Compodoc
         run: npm run compodoc:build
 
-      # 5️⃣ Deploy to GitHub Pages
+      # 6️⃣ Prepare combined deploy folder
+      - name: Prepare GitHub Pages content
+        run: |
+          mkdir gh-pages
+          cp -r dist/* gh-pages/
+          mkdir gh-pages/docs
+          cp -r docs/* gh-pages/docs/
+
+      # 7️⃣ Deploy both to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: gh-pages
