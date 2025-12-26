@@ -37,15 +37,15 @@ jobs:
       - name: Build Compodoc
         run: npm run compodoc:build
 
-      # 6️⃣ Prepare combined deploy folder
+      # 6️⃣ Prepare GitHub Pages content (FIXED)
       - name: Prepare GitHub Pages content
         run: |
           mkdir gh-pages
-          cp -r dist/* gh-pages/
+          cp -r dist/my-angular-app/* gh-pages/
           mkdir gh-pages/docs
           cp -r docs/* gh-pages/docs/
 
-      # 7️⃣ Deploy both to GitHub Pages
+      # 7️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
